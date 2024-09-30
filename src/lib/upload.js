@@ -7,10 +7,10 @@ import OpenAI from "openai";
 
 const s3 = new S3Client({
   region: "auto",
-  endpoint: import.meta.env.R2_ENDPOINT,
+  endpoint: import.meta.env.VITE_R2_ENDPOINT,
   credentials: {
-    accessKeyId: import.meta.env.R2_ACCESS_ID,
-    secretAccessKey: import.meta.env.R2_SECRET_ACCESS,
+    accessKeyId: import.meta.env.VITE_R2_ACCESS_KEY_ID,
+    secretAccessKey: import.meta.env.VITE_R2_SECRET_ACCESS_KEY,
   },
 });
 
@@ -24,7 +24,7 @@ const myKeyWord = {
 const myKeyWordFindKeys = Object.keys(myKeyWord);
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.OPENAIAPI,
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
@@ -65,7 +65,7 @@ export async function uploadAIVoice(file) {
 
   const audio = new File([blob], "audio.mp3", { type: blob.type });
   const params = {
-    Bucket: import.meta.env.R2_BUCKET_NAME,
+    Bucket: import.meta.env.VITE_R2_BUCKET_NAME,
   };
   // eslint-disable-next-line no-useless-catch
   try {
@@ -77,7 +77,7 @@ export async function uploadAIVoice(file) {
       if (!myKeyWordFindKeys.includes(keysSplit)) {
         console.log(myKeyWordFindKeys);
         const command = new PutObjectCommand({
-          Bucket: import.meta.env.R2_BUCKET_NAME,
+          Bucket: import.meta.env.VITE_R2_BUCKET_NAME,
           Key: a + ".mp3", // To Do letter ----------------------------------------------------------------------
           Body: audio,
           ContentType: "audio/mpeg",

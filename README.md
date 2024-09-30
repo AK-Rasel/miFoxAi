@@ -31,12 +31,12 @@ Create a .env file in the root of the project to define your environment-specifi
 
 To configure the project, create a `.env` file in the root directory with the following keys:
 
-- **VITE_OPENAI_API_KEY**: OpenAI API Key for accessing AI services.
-- **VITE_CLOUDFLARE_ACCOUNT_ID**: Cloudflare account ID for managing Cloudflare services.
-- **VITE_R2_ACCESS_KEY_ID**: Access key ID for Cloudflare R2 storage.
-- **VITE_R2_SECRET_ACCESS_KEY**: Secret key for R2 access (keep secure).
-- **VITE_R2_BUCKET_NAME**: Name of the R2 storage bucket.
-- **VITE_R2_ENDPOINT**: Endpoint URL for R2 storage API access.
+- **OPENAI_API_KEY**: OpenAI API Key for accessing AI services.
+- **CLOUDFLARE_ACCOUNT_ID**: Cloudflare account ID for managing Cloudflare services.
+- **R2_ACCESS_KEY_ID**: Access key ID for Cloudflare R2 storage.
+- **R2_SECRET_ACCESS_KEY**: Secret key for R2 access (keep secure).
+- **R2_BUCKET_NAME**: Name of the R2 storage bucket.
+- **R2_ENDPOINT**: Endpoint URL for R2 storage API access.
 
 #### Resource Hints
 
