@@ -24,7 +24,7 @@ const myKeyWord = {
 const myKeyWordFindKeys = Object.keys(myKeyWord);
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.OPENAI_API,
+  apiKey: import.meta.env.OPENAIAPI,
   dangerouslyAllowBrowser: true,
 });
 
