@@ -4,9 +4,7 @@ import {
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import OpenAI from "openai";
-import { myKeyWord, myKeyWordFindKeys } from "../components/MyKeyWord";
 
-// ---------------------------------- S3Client ---------------------------
 const s3 = new S3Client({
   region: "auto",
   endpoint: import.meta.env.VITE_R2_ENDPOINT,
@@ -16,12 +14,35 @@ const s3 = new S3Client({
   },
 });
 
-// ------------------------------------ OpenAI ------------------------------------------
+//----------------------------------- key word------------------------------------------------------------------
+const myKeyWord = {
+  bangladesh: "bangladesh is small country",
+  dhaka: "dhaka is big city",
+  world: "hello world",
+  usa: "usa is a large country",
+  london: "london is a historic city",
+  java: "java is a programming language",
+  react: "react is a JavaScript library",
+  india: "india is known for its diversity",
+  paris: "paris is the city of love",
+  python: "python is a versatile programming language",
+  apple: "apple makes popular tech products",
+  amazon: "amazon is a leading e-commerce company",
+  nile: "the nile is the longest river",
+  everest: "mount everest is the highest peak",
+  sun: "the sun is a star",
+  moon: "the moon orbits the earth",
+  galaxy: "our galaxy is the Milky Way",
+  europe: "europe is a continent",
+  africa: "africa has diverse wildlife",
+};
+const myKeyWordFindKeys = Object.keys(myKeyWord);
+
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
-// ------------------------------ generateAIVoice ---------------------------------
+
 export async function generateAIVoice(file) {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -30,16 +51,16 @@ export async function generateAIVoice(file) {
       model: "whisper-1",
       language: "en",
     });
-    // console.log(transcription.text);
+    console.log(transcription.text);
     const text = [];
-
+    console.log(text);
     myKeyWordFindKeys.forEach((item) => {
       if (transcription.text.toLowerCase().includes(item.toLowerCase())) {
         text.push([item, myKeyWord[item]]);
       }
     });
 
-    // console.log(text[0]);
+    console.log(text[0][1]);
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
       voice: "alloy",
@@ -54,8 +75,9 @@ export async function generateAIVoice(file) {
 }
 
 export async function uploadAIVoice(file) {
-  const [keyName, audioFile] = file;
-  const blob = await audioFile.blob();
+  console.log(file);
+  const [a, b] = file;
+  const blob = await b.blob();
 
   const audio = new File([blob], "audio.mp3", { type: blob.type });
   const params = {
@@ -72,7 +94,7 @@ export async function uploadAIVoice(file) {
         console.log(myKeyWordFindKeys);
         const command = new PutObjectCommand({
           Bucket: import.meta.env.VITE_R2_BUCKET_NAME,
-          Key: keyName + ".mp3",
+          Key: a + ".mp3",
           Body: audio,
           ContentType: "audio/mpeg",
         });

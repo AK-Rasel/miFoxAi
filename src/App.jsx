@@ -47,6 +47,8 @@ function App() {
         loading: false,
         error: null,
       }));
+
+      await fetchFiles();
       notify("Audio uploaded successfully!");
     } catch (error) {
       setState((prevState) => ({
@@ -54,6 +56,7 @@ function App() {
         loading: false,
         error: "Error during audio upload. Please try again.",
       }));
+      await fetchFiles();
       notify("Error during audio upload. Please try again.");
     }
   };
@@ -127,21 +130,21 @@ function App() {
   const [audioFiles, setAudioFiles] = useState([]);
 
   useEffect(() => {
-    const fetchFiles = async () => {
-      const params = { Bucket: import.meta.env.VITE_R2_BUCKET_NAME };
-      try {
-        const data = await s3.send(new ListObjectsV2Command(params));
-        const mp3Files = data.Contents.filter((file) =>
-          file.Key.endsWith(".mp3")
-        );
-        setAudioFiles(mp3Files); // Store files in state
-      } catch (error) {
-        console.error("Error fetching audio files:", error);
-      }
-    };
-
     fetchFiles();
   }, []);
+  const fetchFiles = async () => {
+    const params = { Bucket: import.meta.env.VITE_R2_BUCKET_NAME };
+    try {
+      const data = await s3.send(new ListObjectsV2Command(params));
+      const mp3Files = data.Contents.filter((file) =>
+        file.Key.endsWith(".mp3")
+      );
+      setAudioFiles(mp3Files);
+    } catch (error) {
+      console.error("Error fetching audio files:", error);
+    }
+  };
+
   console.log(audioFiles);
 
   return (
