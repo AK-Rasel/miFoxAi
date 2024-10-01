@@ -49,9 +49,13 @@ To configure the project, create a `.env` file in the root directory with the fo
 ```json
 [
   {
-    "AllowedHeaders": ["*"],
+    "AllowedOrigins": [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      "https://mi-fox-ai-nu.vercel.app"
+    ],
     "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
-    "AllowedOrigins": ["Your Domain"],
+    "AllowedHeaders": ["*"],
     "ExposeHeaders": ["ETag", "x-amz-request-id"],
     "MaxAgeSeconds": 3000
   }
@@ -97,6 +101,9 @@ yarn start
 # or
 pnpm start
 ```
+
+./components/MyKeyWord.js
+Paste your KeyWord
 
 ### Read more
 

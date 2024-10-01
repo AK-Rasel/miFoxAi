@@ -51,6 +51,7 @@ function App() {
       await fetchFiles();
       notify("Audio uploaded successfully!");
     } catch (error) {
+      console.log(error);
       setState((prevState) => ({
         ...prevState,
         loading: false,
@@ -131,9 +132,12 @@ function App() {
     const params = { Bucket: import.meta.env.VITE_R2_BUCKET_NAME };
     try {
       const data = await s3.send(new ListObjectsV2Command(params));
-      const mp3Files = data.Contents.filter((file) =>
-        file.Key.endsWith(".mp3")
-      );
+
+      // Ensure that data.Contents is defined and is an array
+      const mp3Files = data.Contents
+        ? data.Contents.filter((file) => file.Key.endsWith(".mp3"))
+        : [];
+
       setAudioFiles(mp3Files);
     } catch (error) {
       console.error("Error fetching audio files:", error);

@@ -21,8 +21,8 @@ const openai = new OpenAI({
 });
 
 // Generate AI voice from transcription
+// Generate AI voice from transcription
 export async function generateAIVoice(file) {
-  // eslint-disable-next-line no-useless-catch
   try {
     const transcription = await openai.audio.transcriptions.create({
       file,
@@ -37,15 +37,21 @@ export async function generateAIVoice(file) {
       }
     });
 
+    // Handle case where no keywords are found
+    if (text.length === 0) {
+      throw new Error("No keywords found in the transcription.");
+    }
+
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
       voice: "alloy",
-      input: text[0][1],
+      input: text[0][1], // Use the first matched keyword
       language: "en",
     });
 
     return [text[0][0], mp3];
   } catch (error) {
+    console.error("Error generating AI voice:", error);
     throw error;
   }
 }
@@ -60,10 +66,13 @@ export async function uploadAIVoice(file) {
     Bucket: import.meta.env.VITE_R2_BUCKET_NAME,
   };
 
-  // eslint-disable-next-line no-useless-catch
   try {
     const data = await s3.send(new ListObjectsV2Command(params));
-    const mp3Files = data.Contents.filter((file) => file.Key.endsWith(".mp3"));
+
+    // Check if data.Contents exists and is an array
+    const mp3Files = data.Contents
+      ? data.Contents.filter((file) => file.Key.endsWith(".mp3"))
+      : [];
 
     for (const file of mp3Files) {
       const keysSplit = file.Key.split(".")[0];
@@ -79,10 +88,13 @@ export async function uploadAIVoice(file) {
         await s3.send(command);
         console.log("File uploaded successfully!");
       } else {
-        // console.log("File Not uploaded");
+        console.log(
+          "File not uploaded because it matches an existing keyword."
+        );
       }
     }
   } catch (error) {
+    console.log("Error uploading AI voice:", error);
     throw error;
   }
 }
