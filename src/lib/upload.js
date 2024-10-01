@@ -4,7 +4,7 @@ import {
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import OpenAI from "openai";
-
+import { myKeyWord, myKeyWordFindKeys } from "../components/MyKeyWord";
 const s3 = new S3Client({
   region: "auto",
   endpoint: import.meta.env.VITE_R2_ENDPOINT,
@@ -13,30 +13,6 @@ const s3 = new S3Client({
     secretAccessKey: import.meta.env.VITE_R2_SECRET_ACCESS_KEY,
   },
 });
-
-//----------------------------------- key word------------------------------------------------------------------
-const myKeyWord = {
-  bangladesh: "bangladesh is small country",
-  dhaka: "dhaka is big city",
-  world: "hello world",
-  usa: "usa is a large country",
-  london: "london is a historic city",
-  java: "java is a programming language",
-  react: "react is a JavaScript library",
-  india: "india is known for its diversity",
-  paris: "paris is the city of love",
-  python: "python is a versatile programming language",
-  apple: "apple makes popular tech products",
-  amazon: "amazon is a leading e-commerce company",
-  nile: "the nile is the longest river",
-  everest: "mount everest is the highest peak",
-  sun: "the sun is a star",
-  moon: "the moon orbits the earth",
-  galaxy: "our galaxy is the Milky Way",
-  europe: "europe is a continent",
-  africa: "africa has diverse wildlife",
-};
-const myKeyWordFindKeys = Object.keys(myKeyWord);
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
