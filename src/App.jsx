@@ -80,7 +80,6 @@ function App() {
             const audioBlob = new Blob(audioRef.current, {
               type: "audio/mp3",
             });
-
             if (audioBlob.size > 0) {
               await uploadAudio(audioBlob);
               setState((prevState) => ({ ...prevState, error: null }));
@@ -112,9 +111,7 @@ function App() {
         }
       }
     };
-
     processing();
-
     return () => {
       if (recorderRef.current) {
         recorderRef.current.stop();
@@ -124,9 +121,7 @@ function App() {
       }
     };
   }, [state.status]);
-
   const { status, loading } = state;
-
   const [audioFiles, setAudioFiles] = useState([]);
 
   useEffect(() => {
@@ -144,8 +139,6 @@ function App() {
       console.error("Error fetching audio files:", error);
     }
   };
-
-  console.log(audioFiles);
 
   return (
     <>
@@ -172,7 +165,7 @@ function App() {
             )}
           </button>
         </div>
-        {audioFiles.length !== 0 ? (
+        {audioFiles.length > 0 ? (
           <div>
             <h2 className="text-center  font-semibold text-purple-600 text-4xl leading-relaxed">
               Audio Files
