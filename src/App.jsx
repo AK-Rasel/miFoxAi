@@ -1,8 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { uploadAIVoice, generateAIVoice } from "./lib/upload";
+import { uploadAIVoice, generateAIVoice, deleteData } from "./lib/upload";
 import { LoaderIcon } from "./components/Icons";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
+
+// or via CommonJS
+
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 const s3 = new S3Client({
   region: "auto",
@@ -143,13 +147,43 @@ function App() {
       console.error("Error fetching audio files:", error);
     }
   };
+  const handelDelete = async (item) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteData(item);
+          await fetchFiles();
+
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          });
+        } catch (error) {
+          Swal.fire({
+            title: "Error!",
+            text: "There was an error deleting the file: " + error.message,
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
 
   return (
     <>
       <div className="min-h-screen grid place-items-center font-inter bg-gray-200 grid-cols-2">
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-6xl mb-7 font-semibold text-purple-600">
-            Text to Speech
+            Speech To AI-Speech
           </h1>
           <button
             className={`px-6 py-2 min-w-48 min-h-12 rounded text-white relative hover:bg-purple-600/90 transition-colors shadow overflow-hidden ${
@@ -180,14 +214,21 @@ function App() {
                   <p className="text-base uppercase leading-relaxed mt-2 mb-2">
                     {file.Key}
                   </p>
-
-                  <audio
-                    controls
-                    src={`${import.meta.env.VITE_PUBLIC_R2_BUCKET_URL}/${
-                      file.Key
-                    }`}
-                    type="audio/mpeg"
-                  ></audio>
+                  <div className="flex justify-center items-center gap-3">
+                    <audio
+                      controls
+                      src={`${import.meta.env.VITE_PUBLIC_R2_BUCKET_URL}/${
+                        file.Key
+                      }`}
+                      type="audio/mpeg"
+                    ></audio>
+                    <button
+                      onClick={() => handelDelete(file.Key)}
+                      className="py-2 px-4 bg-red-500 text-white rounded"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
